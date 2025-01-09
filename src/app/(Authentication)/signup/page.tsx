@@ -1,102 +1,93 @@
-"use client";
-import React, { useEffect, useState } from 'react';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import { Button, TextField, Typography, Box } from '@mui/material';
-import { useRouter } from 'next/navigation';
-import { enqueueSnackbar, closeSnackbar } from 'notistack';
-import axios from 'axios';
+"use client"
+import { Box, Button, MenuItem, Paper, TextField, Typography } from '@mui/material'
+import { useFormik } from 'formik'
+import React from 'react'
+import * as yup from "yup"
 
-export default function SignUpPage() {
-  const [isClient, setIsClient] = useState(false);
-  const router = useRouter();
 
-  useEffect(() => {
-    setIsClient(true); // تأكد من أنك في بيئة المتصفح
-  }, []);
+import { signup } from '@/imgs/StateManagement/slices/userSignUpSlice'
 
+import { useDespatchCostum } from '@/imgs/Hooks/EditReactReduxHooks'
+import { closeSnackbar, enqueueSnackbar } from 'notistack'
+import { useRouter } from 'next/navigation'
+import { setTimeout } from 'timers/promises'
+
+
+
+export default function SignUp() {
+  const despatch = useDespatchCostum()
+  const router = useRouter()
   const validationSchema = yup.object({
-    name: yup.string().required('Name is required'),
-    email: yup.string().email('Email is not valid').required('Email is required'),
-    password: yup.string().required('Password is required').min(6, 'Password should be at least 6 characters'),
-  });
+    name: yup.string().required("name is required").min(4).max(20),
+    email: yup.string().required("email is required").email("email is not valid"),
+    gender: yup.string().required("gender is required"),
+    dateOfBirth: yup.string().required("date of birth is required"),
+    password: yup.string().required("password is required").matches(/^[A-Z][a-z0-9]{5,20}/),
+    rePassword: yup.string().required("rePassord is required").oneOf([yup.ref("password")])
+  })
 
-  const formik = useFormik({
+  const { handleBlur, handleChange, handleSubmit, touched, errors, values } = useFormik({
     initialValues: {
-      name: '',
-      email: '',
-      password: '',
+      name: "",
+      email: "",
+      password: "",
+      rePassword: "",
+      dateOfBirth: "",
+      gender: ""
     },
-    validationSchema,
     onSubmit: async (values) => {
       let toastID;
       try {
-        toastID = enqueueSnackbar('Processing...', { variant: 'info', persist: true });
-
-        // إرسال بيانات التسجيل إلى الخادم
-        const { data } = await axios.post('https://linked-posts.routemisr.com/users/signup', values);
-
-        // تخزين التوكن في localStorage إذا تم التسجيل بنجاح
-        if (data?.token) {
-          localStorage.setItem('userToken', data.token);
-          enqueueSnackbar('Sign up successful!', { variant: 'success', autoHideDuration: 2000 });
-
-          // إعادة التوجيه إلى الصفحة الرئيسية بعد 2 ثانية
-          setTimeout(() => {
-            router.push('/');
-          }, 2000);
+        toastID = enqueueSnackbar('Processing...', { variant: 'info', persist: true })
+        const { payload } = await despatch(signup(values))
+        if (payload == "success") {
+          enqueueSnackbar("Registion successfully .", { variant: 'success', autoHideDuration : 2000})
+          
+          window.setTimeout(()=>{
+            router.push("/login")    
+          },2000)      
         }
       } catch (error) {
-        enqueueSnackbar('Sign up failed!', { variant: 'error', autoHideDuration: 3000 });
+        enqueueSnackbar("Registion unsuccessfully .", { variant: 'error', autoHideDuration : 3000})
+
       } finally {
-        closeSnackbar(toastID);
+        closeSnackbar(toastID)
       }
     },
-  });
+    validationSchema,
+  })
+  return <>
+    <Box sx={{ mt: 1, width: "85%", mx: "auto", p: 4 }}>
+      <Paper elevation={10} sx={{ p: 2 }} >
+        <form style={{ display: "flex", flexDirection: "column", gap: "20px" }} onSubmit={handleSubmit}>
+          <TextField id="filled-basic" label="name" variant="filled" type='text' name='name' value={values.name} onChange={handleChange} onBlur={handleBlur} />
+          {errors.name && touched.name ? <><Typography sx={{ fontWeight: "600", bgcolor: "red", borderRadius: "10px", textAlign: "center", color: "white", paddingBlock: "10px" }}>{errors.name}</Typography></> : ""}
 
-  if (!isClient) {
-    return null; // لا تعرض الصفحة أثناء البناء على الخادم
-  }
+          <TextField id="filled-basic" label="email" variant="filled" type='email' name='email' value={values.email} onChange={handleChange} onBlur={handleBlur} />
+          {errors.email && touched.email ? <><Typography sx={{ fontWeight: "600", bgcolor: "red", borderRadius: "10px", textAlign: "center", color: "white", paddingBlock: "10px" }}>{errors.email}</Typography></> : ""}
 
-  return (
-    <Box sx={{ mt: 7, width: '85%', mx: 'auto', p: 4 }}>
-      <form onSubmit={formik.handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <TextField
-          label="Name"
-          variant="filled"
-          name="name"
-          value={formik.values.name}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.name && Boolean(formik.errors.name)}
-          helperText={formik.touched.name && formik.errors.name}
-        />
-        <TextField
-          label="Email"
-          variant="filled"
-          type="email"
-          name="email"
-          value={formik.values.email}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.email && Boolean(formik.errors.email)}
-          helperText={formik.touched.email && formik.errors.email}
-        />
-        <TextField
-          label="Password"
-          variant="filled"
-          type="password"
-          name="password"
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
-        />
-        <Button variant="contained" type="submit" sx={{ bgcolor: '#1976d2', color: 'white' }}>
-          Sign Up
-        </Button>
-      </form>
+          <TextField id="filled-basic" variant="filled" type='date' name='dateOfBirth' value={values.dateOfBirth} onChange={handleChange} onBlur={handleBlur} />
+          <TextField
+            id="gender-select"
+            select
+            label="Gender"
+            variant="filled"
+            name="gender"
+            value={values.gender}
+            onChange={handleChange}
+            onBlur={handleBlur}
+
+          >
+            <MenuItem value="male">male</MenuItem>
+            <MenuItem value="female">female</MenuItem>
+          </TextField>
+          <TextField id="filled-basic" label="Password" variant="filled" type='password' name='password' value={values.password} onChange={handleChange} onBlur={handleBlur} />
+          {errors.password && touched.password ? <><Typography sx={{ fontWeight: "600", bgcolor: "red", borderRadius: "10px", textAlign: "center", color: "white", paddingBlock: "10px" }}>{errors.password}</Typography></> : ""}
+          <TextField id="filled-basic" label="Repassword" variant="filled" type='password' name='rePassword' value={values.rePassword} onChange={handleChange} onBlur={handleBlur} />
+          {errors.rePassword && touched.rePassword ? <><Typography sx={{ fontWeight: "600", bgcolor: "red", borderRadius: "10px", textAlign: "center", color: "white", paddingBlock: "10px" }}>{errors.rePassword}</Typography></> : ""}
+          <Button variant="contained" type='submit'>SignUp</Button>
+        </form>
+      </Paper>
     </Box>
-  );
+  </>
 }

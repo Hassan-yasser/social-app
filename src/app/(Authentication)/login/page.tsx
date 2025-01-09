@@ -1,90 +1,79 @@
-"use client";
-import React, { useEffect, useState } from 'react';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import { Button, TextField, Typography, Box } from '@mui/material';
-import { useRouter } from 'next/navigation';
-import { enqueueSnackbar, closeSnackbar } from 'notistack';
-import axios from 'axios';
+"use client"
+import { useDespatchCostum } from '@/imgs/Hooks/EditReactReduxHooks'
+import { signIn } from '@/imgs/StateManagement/slices/userLogInSlice'
+import { Box, Button, Paper, TextField, Typography } from '@mui/material'
+import { useFormik } from 'formik'
+import { useRouter } from 'next/navigation'
+import { closeSnackbar, enqueueSnackbar } from 'notistack'
+import React, { useEffect, useState } from 'react'
+import * as yup from "yup"
 
-export default function LoginPage() {
+export default function LogIn() {
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
-
+  const dispatch = useDespatchCostum()
   useEffect(() => {
     setIsClient(true); // تأكد من أنك في بيئة المتصفح
   }, []);
 
-  const validationSchema = yup.object({
-    email: yup.string().email('Email is not valid').required('Email is required'),
-    password: yup.string().required('Password is required').min(6, 'Password should be at least 6 characters'),
-  });
 
-  const formik = useFormik({
+
+
+  const validationSchema = yup.object({
+    email: yup.string().required("Email is required").email("Email is not valid"),
+    password: yup.string().required("Password is required").matches(/^[A-Z][a-z0-9]{5,20}/, "Password must start with a capital letter and contain between 6-20 characters."),
+  })
+
+  const { handleBlur, handleChange, handleSubmit, touched, errors, values } = useFormik({
     initialValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
-    validationSchema,
     onSubmit: async (values) => {
       let toastID;
       try {
-        toastID = enqueueSnackbar('Processing...', { variant: 'info', persist: true });
+        toastID = enqueueSnackbar('Processing...', { variant: 'info', persist: true })
+        const { payload } = await dispatch(signIn(values))
+        console.log(payload);
 
-        // إرسال بيانات تسجيل الدخول إلى الخادم
-        const { data } = await axios.post('https://linked-posts.routemisr.com/users/login', values);
-
-        // تخزين التوكن في localStorage إذا تم تسجيل الدخول بنجاح
-        if (data?.token) {
-          localStorage.setItem('userToken', data.token);
-          enqueueSnackbar('Login successful!', { variant: 'success', autoHideDuration: 2000 });
-
-          // إعادة التوجيه إلى الصفحة الرئيسية بعد 2 ثانية
+        const { message, token } = payload
+        if (message === "success") {
+          if (isClient) {  // تأكد من أن localStorage متاح في المتصفح فقط
+            localStorage.setItem("userToken", token)
+          }
+          enqueueSnackbar('Login process is successful!', { variant: 'success', autoHideDuration: 2000 })
           setTimeout(() => {
-            router.push('/');
-          }, 2000);
+            router.push("/")
+          }, 2000)
         }
       } catch (error) {
-        enqueueSnackbar('Login failed!', { variant: 'error', autoHideDuration: 3000 });
+        enqueueSnackbar('Login process is unsuccessful!', { variant: 'error', autoHideDuration: 3000 })
       } finally {
-        closeSnackbar(toastID);
+        closeSnackbar(toastID)
       }
     },
-  });
+    validationSchema,
+  })
 
   if (!isClient) {
     return null; // لا تعرض الصفحة أثناء البناء على الخادم
   }
 
   return (
-    <Box sx={{ mt: 7, width: '85%', mx: 'auto', p: 4 }}>
-      <form onSubmit={formik.handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <TextField
-          label="Email"
-          variant="filled"
-          type="email"
-          name="email"
-          value={formik.values.email}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.email && Boolean(formik.errors.email)}
-          helperText={formik.touched.email && formik.errors.email}
-        />
-        <TextField
-          label="Password"
-          variant="filled"
-          type="password"
-          name="password"
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
-        />
-        <Button variant="contained" type="submit" sx={{ bgcolor: '#1976d2', color: 'white' }}>
-          Login
-        </Button>
-      </form>
-    </Box>
-  );
+    <>
+      <Box sx={{ mt: 7, width: "85%", mx: "auto", p: 4 }}>
+        <Paper elevation={10} sx={{ p: 2 }} >
+          <form style={{ display: "flex", flexDirection: "column", gap: "20px" }} onSubmit={handleSubmit}>
+            <TextField id="email" label="Email" variant="filled" type="email" name="email" value={values.email} onChange={handleChange} onBlur={handleBlur} />
+            {errors.email && touched.email && <Typography sx={{ fontWeight: "600", bgcolor: "red", borderRadius: "10px", textAlign: "center", color: "white", paddingBlock: "10px" }}>{errors.email}</Typography>}
+            
+            <TextField id="password" label="Password" variant="filled" type="password" name="password" value={values.password} onChange={handleChange} onBlur={handleBlur} />
+            {errors.password && touched.password && <Typography sx={{ fontWeight: "600", bgcolor: "red", borderRadius: "10px", textAlign: "center", color: "white", paddingBlock: "10px" }}>{errors.password}</Typography>}
+            
+            <Button variant="contained" type="submit">Login</Button>
+          </form>
+        </Paper>
+      </Box>
+    </>
+  )
 }
