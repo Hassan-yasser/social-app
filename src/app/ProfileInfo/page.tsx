@@ -40,7 +40,7 @@ export default function Page() {
   const user = useSelectorCustom((state) => state.userInfoReducre);
   const dispatch = useDespatchCostum();
   const fileInput = useRef<HTMLInputElement>(null);
-  const [isClient, setIsClient] = useState(false); // حالة للتحقق من أننا في بيئة المتصفح
+  const [isClient, setIsClient] = useState(false);
 
   async function getDataUser() {
     try {
@@ -52,7 +52,7 @@ export default function Page() {
   }
 
   async function uploadProfileImg() {
-    if (!isClient) return; // التأكد من أن الكود يعمل في بيئة المتصفح فقط
+    if (!isClient) return;
     
     const file = fileInput.current?.files?.[0];
     if (!file) {
@@ -84,7 +84,7 @@ export default function Page() {
   }
   
   async function changePassword(values: any) {
-    if (!isClient) return; // التأكد من أن الكود يعمل في بيئة المتصفح فقط
+    if (!isClient) return; 
 
     const toastId = enqueueSnackbar('Changing password...', { variant: 'info', persist: true });
     
@@ -128,12 +128,12 @@ export default function Page() {
   });
 
   useEffect(() => {
-    setIsClient(true); // تأكد من أننا في بيئة المتصفح
+    setIsClient(true); 
     getDataUser();
   }, []);
 
   if (!isClient) {
-    return null; // لا يتم عرض الصفحة إذا لم نكن في بيئة المتصفح
+    return null; 
   }
 
   return (

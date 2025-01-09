@@ -13,7 +13,7 @@ export default function LogIn() {
   const router = useRouter();
   const dispatch = useDespatchCostum()
   useEffect(() => {
-    setIsClient(true); // تأكد من أنك في بيئة المتصفح
+    setIsClient(true);
   }, []);
 
 
@@ -38,7 +38,7 @@ export default function LogIn() {
 
         const { message, token } = payload
         if (message === "success") {
-          if (isClient) {  // تأكد من أن localStorage متاح في المتصفح فقط
+          if (isClient) {  
             localStorage.setItem("userToken", token)
           }
           enqueueSnackbar('Login process is successful!', { variant: 'success', autoHideDuration: 2000 })
@@ -56,7 +56,7 @@ export default function LogIn() {
   })
 
   if (!isClient) {
-    return null; // لا تعرض الصفحة أثناء البناء على الخادم
+    return null; 
   }
 
   return (

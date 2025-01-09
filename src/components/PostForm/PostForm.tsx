@@ -8,7 +8,7 @@ import axios from 'axios';
 import { closeSnackbar, enqueueSnackbar } from 'notistack';
 import { GetUserPost } from '@/imgs/StateManagement/slices/userPosts.slice';
 
-// مكون input المخفي لتحميل الملفات
+
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
@@ -25,19 +25,19 @@ export default function PostForm() {
     const { token } = useSelectorCustom((store) => store.userLogInReducer);
     const despatch = useDespatchCostum();
 
-    const [isClient, setIsClient] = useState(false); // حالة لتحديد بيئة العميل
+    const [isClient, setIsClient] = useState(false); 
     const Text = useRef<HTMLInputElement>(null);
     const File = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        setIsClient(true); // التأكد من أن الكود يعمل في بيئة المتصفح
+        setIsClient(true); 
     }, []);
 
-    // الدالة التي يتم تنفيذها عند تقديم النموذج
+
     const CreatePost = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if (!isClient) return; // التأكد من أن الكود يعمل في بيئة العميل فقط
+        if (!isClient) return; 
 
         const content = Text.current?.value || "";
         const file = File.current?.files?.[0];
@@ -50,7 +50,7 @@ export default function PostForm() {
             url: "https://linked-posts.routemisr.com/posts",
             method: "POST",
             headers: {
-                token: localStorage.getItem("userToken"), // التأكد من أن الكود يعمل في بيئة المتصفح فقط
+                token: localStorage.getItem("userToken"), 
             },
             data: myForm,
         };
@@ -70,7 +70,7 @@ export default function PostForm() {
     };
 
     if (!isClient) {
-        return null; // العودة بـ null إذا كان في بيئة الخادم
+        return null; 
     }
 
     return (

@@ -34,10 +34,10 @@ export default function PostCard({ postInfo, showAllComments = false }: { postIn
   const Despatch = useDespatchCostum();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const [isClient, setIsClient] = React.useState(false); // إضافة حالة isClient
+  const [isClient, setIsClient] = React.useState(false); 
 
   React.useEffect(() => {
-    setIsClient(true); // تأكيد العمل في بيئة المتصفح
+    setIsClient(true); 
   }, []);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -48,7 +48,7 @@ export default function PostCard({ postInfo, showAllComments = false }: { postIn
   };
 
   async function CreateComment() {
-    if (!isClient) return; // التأكد من أن الكود يعمل في بيئة المتصفح
+    if (!isClient) return; 
     const Options = {
       url: `https://linked-posts.routemisr.com/comments`,
       method: "POST",
@@ -104,9 +104,9 @@ export default function PostCard({ postInfo, showAllComments = false }: { postIn
     }
   };
 
-  // التحقق من أن الكود يعمل في بيئة العميل قبل محاولة الوصول إلى localStorage
+
   if (!isClient) {
-    return null; // العودة بـ null إذا كان في بيئة الخادم
+    return null; 
   }
 
   return (

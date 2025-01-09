@@ -12,10 +12,10 @@ export default function PostDetails() {
   const dispatch = useDespatchCostum();
   const { post } = useSelectorCustom((store) => store.PostsReducer);
   const [loading, setLoading] = useState(false);
-  const [isClient, setIsClient] = useState(false); // حالة للتحقق من أننا في بيئة المتصفح
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true); // تأكد من أننا في بيئة المتصفح
+    setIsClient(true); 
     if (postId) {
       setLoading(true);
       dispatch(GetSinglePost(postId))
@@ -23,7 +23,7 @@ export default function PostDetails() {
     }
   }, [dispatch, postId]);
 
-  // إذا لم نكن في بيئة المتصفح، لا نعرض المحتوى
+
   if (!isClient) {
     return null;
   }

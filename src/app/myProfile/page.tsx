@@ -1,9 +1,8 @@
 "use client";
-import { styled } from '@mui/material/styles';
+
 import React, { useState, useEffect } from 'react';
 import { useDespatchCostum, useSelectorCustom } from '@/imgs/Hooks/EditReactReduxHooks';
 import { GetUserPost } from '@/imgs/StateManagement/slices/userPosts.slice';
-import { enqueueSnackbar } from 'notistack';
 import UserPostCard from '@/imgs/components/userPostsCard/UserPostCard';
 import PostForm from '@/imgs/components/PostForm/PostForm';
 import { Box, Typography } from '@mui/material';
@@ -11,18 +10,18 @@ import { Box, Typography } from '@mui/material';
 export default function Page() {
   const [commentContent, setCommentContent] = useState("");
   const [hideShow, setHideShow] = useState(false);
-  const [isClient, setIsClient] = useState(false); // حالة للتأكد من أننا في بيئة المتصفح
+  const [isClient, setIsClient] = useState(false); 
 
   const despatch = useDespatchCostum();
 
   useEffect(() => {
-    setIsClient(true); // تأكد من أننا في بيئة المتصفح
+    setIsClient(true);
     despatch(GetUserPost());
   }, [despatch]);
 
   const { posts } = useSelectorCustom((store) => store.PostsUser);
 
-  // إذا لم نكن في بيئة المتصفح، لا نعرض المحتوى
+
   if (!isClient) {
     return null;
   }

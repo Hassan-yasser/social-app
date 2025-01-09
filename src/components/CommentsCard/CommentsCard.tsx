@@ -16,7 +16,7 @@ import { useParams } from "next/navigation";
 export default function CommentsCard({ comment }: { comment: Comment }) {
   const { postId } = useParams<any>();
   
-  const [isClient, setIsClient] = React.useState(false); // إضافة حالة isClient
+  const [isClient, setIsClient] = React.useState(false); 
   const dispatch = useDespatchCostum();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [isEditing, setIsEditing] = React.useState(false);
@@ -24,9 +24,9 @@ export default function CommentsCard({ comment }: { comment: Comment }) {
   const [updatedContent, setUpdatedContent] = React.useState(comment?.content || "");
   const open = Boolean(anchorEl);
 
-  // تحقق من البيئة
+
   React.useEffect(() => {
-    setIsClient(true); // عند تحميل الصفحة في المتصفح، يتم تحديث isClient إلى true
+    setIsClient(true);
   }, []);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -63,7 +63,7 @@ export default function CommentsCard({ comment }: { comment: Comment }) {
     return comment.commentCreator.photo;
   }
 
-  // التحقق من أن الكود يعمل في بيئة المتصفح
+
   if (!isClient) {
     return null;
   }

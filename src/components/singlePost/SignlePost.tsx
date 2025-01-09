@@ -18,20 +18,20 @@ export default function SignlePost({ postInfo }: { postInfo: Post }) {
   const [commentContent, setCommentContent] = useState("");
   const [hideShow, setHideShow] = useState(false);
   const [isLoading, setisLoading] = useState(false);
-  const [isClient, setIsClient] = useState(false); // التحقق من البيئة
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true); // التأكد من أن الكود يعمل في بيئة المتصفح
+    setIsClient(true);
   }, []);
 
   const CreateComment = async () => {
-    if (!isClient) return; // التأكد من أن الكود يعمل في بيئة المتصفح فقط
+    if (!isClient) return;
 
     const Options = {
       url: `https://linked-posts.routemisr.com/comments`,
       method: "POST",
       headers: {
-        token: localStorage.getItem("userToken") || "", // التأكد من وجود token
+        token: localStorage.getItem("userToken") || "", 
       },
       data: {
         content: commentContent,
@@ -58,7 +58,7 @@ export default function SignlePost({ postInfo }: { postInfo: Post }) {
   };
 
   const handleShareClick = async () => {
-    if (!isClient) return; // التأكد من أن الكود يعمل في بيئة المتصفح فقط
+    if (!isClient) return;
 
     const postUrl = `${window.location.origin}/post/${postInfo?._id}`;
 
@@ -87,7 +87,7 @@ export default function SignlePost({ postInfo }: { postInfo: Post }) {
   };
 
   if (!isClient) {
-    return null; // العودة بـ null إذا كان في بيئة الخادم
+    return null; 
   }
 
   return (

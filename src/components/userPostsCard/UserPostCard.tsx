@@ -44,7 +44,7 @@ export default function UserPostCard({ post }: { post: NonNullable<Post> }) {
   };
 
   const handleEdit = () => {
-    setEditMode(true); // تفعيل وضع التحرير
+    setEditMode(true); 
     handleMenuClose();
   };
 
@@ -55,7 +55,7 @@ export default function UserPostCard({ post }: { post: NonNullable<Post> }) {
         await despatch(updatePost({ id: post._id, body: updatedBody, image: updatedImage }));
       await despatch(GetUserPost());
       enqueueSnackbar("Post updated successfully!", { variant: "success", autoHideDuration: 3000 });
-      setEditMode(false); // إلغاء وضع التحرير
+      setEditMode(false);
     } catch (error) {
       enqueueSnackbar("Failed to update post.", { variant: "error", autoHideDuration: 3000 });
     } finally {
@@ -63,11 +63,11 @@ export default function UserPostCard({ post }: { post: NonNullable<Post> }) {
     }
   };
 
-  // تحقق من وجود localStorage
+
   const token = typeof window !== "undefined" ? localStorage.getItem("userToken") : null;
 
   async function CreateComment() {
-    // تأكد من وجود token
+
     if (!token) {
       enqueueSnackbar("You need to log in to comment", { variant: "error", autoHideDuration: 3000 });
       return;
@@ -77,7 +77,7 @@ export default function UserPostCard({ post }: { post: NonNullable<Post> }) {
       url: `https://linked-posts.routemisr.com/comments`,
       method: "POST",
       headers: {
-        token, // استخدام الـ token المحفوظ في localStorage
+        token, 
       },
       data: {
         content: commentContent,

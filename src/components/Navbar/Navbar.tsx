@@ -20,10 +20,10 @@ export default function ResponsiveAppBar() {
   const router = useRouter();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-  const [isClient, setIsClient] = React.useState(false); // إضافة حالة isClient
+  const [isClient, setIsClient] = React.useState(false);
 
   React.useEffect(() => {
-    setIsClient(true); // تأكيد العمل في بيئة المتصفح
+    setIsClient(true);
   }, []);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -43,15 +43,15 @@ export default function ResponsiveAppBar() {
   };
 
   async function signIn() {
-    if (isClient) { // التحقق من وجود المتصفح قبل الوصول إلى localStorage
+    if (isClient) {
       localStorage.removeItem("userToken");
       router.push("/login");
     }
   }
 
-  // التحقق من أن الكود يعمل في بيئة العميل قبل محاولة الوصول إلى localStorage
+ 
   if (!isClient) {
-    return null; // العودة بـ null إذا كان في بيئة الخادم
+    return null; 
   }
 
   return (

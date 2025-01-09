@@ -14,14 +14,14 @@ const PostsComponent = () => {
   const { Posts } = useSelectorCustom((state: any) => state.PostsReducer);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [isClient, setIsClient] = useState(false); // إضافة حالة isClient
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true); // عند تحميل الصفحة في المتصفح، نغير الحالة إلى true
+    setIsClient(true); 
   }, []);
 
   useEffect(() => {
-    if (isClient) { // التحقق من البيئة قبل تنفيذ الكود
+    if (isClient) { 
       dispatch(GetUserInfo());
       dispatch(GetPosts({ page: 1 }));
     }
@@ -35,7 +35,7 @@ const PostsComponent = () => {
     dispatch(GetPosts({ page: nextPage })).finally(() => setIsLoading(false));
   };
 
-  if (!isClient) { // التأكد من أنه في بيئة المتصفح قبل عرض المحتوى
+  if (!isClient) { 
     return null;
   }
 
