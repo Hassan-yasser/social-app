@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-export const DeleteComment = createAsyncThunk("DeleteCommentSlice/deleteComment",async (id :string,{getState})  =>{
+export const DeleteComment = createAsyncThunk("DeleteCommentSlice/deleteComment",async (id :string)  =>{
       const Options = {
         url : `https://linked-posts.routemisr.com/comments/${id}`,
         method : "DELETE",

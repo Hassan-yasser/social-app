@@ -15,13 +15,15 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'
+import { useDespatchCostum } from '@/imgs/Hooks/EditReactReduxHooks';
+import { GetUserInfo } from '@/imgs/StateManagement/slices/userLoggedData.slice';
 
 export default function ResponsiveAppBar() {
   const router = useRouter();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [isClient, setIsClient] = React.useState(false);
-
+  const Dispatch = useDespatchCostum()
   React.useEffect(() => {
     setIsClient(true);
   }, []);
@@ -100,7 +102,7 @@ export default function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="user" src={`${localStorage.getItem("userImg")}`} />
               </IconButton>
             </Tooltip>
             <Menu

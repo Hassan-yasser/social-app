@@ -4,9 +4,8 @@ import { useDespatchCostum, useSelectorCustom } from "../Hooks/EditReactReduxHoo
 import { GetPosts } from "../StateManagement/slices/postsSlice";
 import { Post } from "../types/interface/interface";
 import PostCard from "../components/PostCard/PostCard";
-import ResponsiveAppBar from "../components/Navbar/Navbar";
 import Loading from "./loading";
-import { Button, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import { GetUserInfo } from "../StateManagement/slices/userLoggedData.slice";
 
 const PostsComponent = () => {

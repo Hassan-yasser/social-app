@@ -12,7 +12,6 @@ export const GetUserInfo = createAsyncThunk("user/Info", async () => {
         }
     }
     let { data } = await axios.request(Options)
-    // console.log(data.user);
 
     return data.user
 })
@@ -35,7 +34,8 @@ const userInfo = createSlice({
     extraReducers: (builder) => {
         builder.addCase(GetUserInfo.fulfilled , (state,{payload})=> {
             state.user = payload
-            console.log(payload);
+            localStorage.setItem("userId", payload._id)
+            localStorage.setItem("userImg", payload.photo)
         })
     }
 })

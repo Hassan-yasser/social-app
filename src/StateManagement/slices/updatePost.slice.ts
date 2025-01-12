@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-
-// الدالة لتحديث المنشور
 export const updatePost = createAsyncThunk(
   "updatingPost/updatePost",
   async (
@@ -34,12 +32,11 @@ export const updatePost = createAsyncThunk(
   }
 );
 
-// الحالة الابتدائية
+
 const initialState: { isLoading: boolean } = {
   isLoading: false,
 };
 
-// slice الخاص بتحديث المنشورات
 export const updatePostSlice = createSlice({
   name: "updatingPost",
   initialState,
@@ -58,5 +55,4 @@ export const updatePostSlice = createSlice({
   },
 });
 
-// المُصدر النهائي للمخفض
 export const UpdatePostReducers = updatePostSlice.reducer;

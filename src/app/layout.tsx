@@ -7,6 +7,7 @@ import theme from "../theme";
 import Providerstore from "../components/FixProvider/Provider.store";
 import Notes from "../components/FixProvider/Notes";
 import ResponsiveAppBar from "../components/Navbar/Navbar";
+import ProtectRouting from "../components/ProtectedRoutes/ProtectRouting";
 
 
 const geistSans = Geist({
@@ -43,7 +44,9 @@ export default function RootLayout({
             <Providerstore>
               <Notes>
                 <ResponsiveAppBar />
+                <ProtectRouting>
                 {children}
+                </ProtectRouting>
               </Notes>
             </Providerstore>
           </ThemeProvider>

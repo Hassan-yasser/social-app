@@ -37,6 +37,27 @@ export default function CommentsCard({ comment }: { comment: Comment }) {
     setAnchorEl(null);
   };
 
+
+
+  const handleRmove = async () => {
+    handleClose();
+    let toastID = enqueueSnackbar("Processing...", { variant: "info", persist: true });
+    try {
+      await dispatch(DeleteComment(comment._id));
+      enqueueSnackbar("Comment deleted successfully.", { variant: "success", autoHideDuration: 2000 });
+    } catch (error) {
+      enqueueSnackbar("Failed to delete the comment. Please check your permissions or try again.", { variant: "error", autoHideDuration: 2000 });
+      console.error(error);
+    } finally {
+      dispatch(GetUserPost());
+      dispatch(GetSinglePost(postId));
+      closeSnackbar(toastID);
+    }
+  }
+
+  
+
+
   const handleUpdate = async () => {
     let toastID = enqueueSnackbar("Processing update...", { variant: "info", persist: true });
     try {
@@ -140,24 +161,7 @@ export default function CommentsCard({ comment }: { comment: Comment }) {
                     {isEditing && <MenuItem onClick={handleUpdate}>Save</MenuItem>}
                     {isEditing && <MenuItem onClick={() => setIsEditing(false)}>Cancel</MenuItem>}
                     <MenuItem
-                      onClick={async () => {
-                        handleClose();
-                        let toastID = enqueueSnackbar("Processing...", { variant: "info", persist: true });
-                        try {
-                          const { payload } = await dispatch(DeleteComment(comment._id));
-                          if (payload.message === "success") {
-                            enqueueSnackbar("Comment deleted successfully.", { variant: "success", autoHideDuration: 2000 });
-                          } else {
-                            enqueueSnackbar("Failed to delete comment.", { variant: "error", autoHideDuration: 3000 });
-                          }
-                        } catch (error) {
-                          console.error(error);
-                        } finally {
-                          dispatch(GetUserPost());
-                          dispatch(GetSinglePost(postId));
-                          closeSnackbar(toastID);
-                        }
-                      }}
+                      onClick={handleRmove}
                     >
                       Remove
                     </MenuItem>
